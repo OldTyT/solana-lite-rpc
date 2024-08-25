@@ -308,7 +308,7 @@ impl LedgerStorageAdapter for LedgerStorage {
 
         let tx_cell_data = hbase
             .get_protobuf_or_bincode_cell::<StoredConfirmedTransactionWithStatusMeta, generated::ConfirmedTransactionWithStatusMeta>(
-                "tx_full",
+                "tx",
                 signature.to_string(),
             )
             .await
@@ -322,7 +322,7 @@ impl LedgerStorageAdapter for LedgerStorage {
             hbase::CellData::Bincode(tx) => Some(tx.into()),
             hbase::CellData::Protobuf(tx) => Some(tx.try_into().map_err(|_err| {
                 info!("Protobuf object is corrupted");
-                hbase::Error::ObjectCorrupt(format!("tx_full/{}", signature.to_string()))
+                hbase::Error::ObjectCorrupt(format!("tx/{}", signature.to_string()))
             })?),
         })
     }
